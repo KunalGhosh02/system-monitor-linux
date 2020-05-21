@@ -296,6 +296,6 @@ long LinuxParser::UpTime(int pid) {
     }
 
     start_time = stat_vals[21];
-
-    return UpTime() - stol(start_time) / sysconf(_SC_CLK_TCK);
   }
+  return UpTime() - stol(start_time) / sysconf(_SC_CLK_TCK);
+}
