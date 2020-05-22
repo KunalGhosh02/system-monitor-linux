@@ -27,6 +27,7 @@ string LinuxParser::OperatingSystem() {
       while (linestream >> key >> value) {
         if (key == "PRETTY_NAME") {
           std::replace(value.begin(), value.end(), '_', ' ');
+          filestream.close();
           return value;
         }
       }
@@ -44,6 +45,7 @@ string LinuxParser::Kernel() {
     std::getline(stream, line);
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
+    stream.close();
   }
   return kernel;
 }
@@ -89,7 +91,7 @@ float LinuxParser::MemoryUtilization() {
       if (done_total && done_free) break;
     }
   }
-
+  filestream.close();
   return (stof(MemTotal) - stof(MemFree)) / stof(MemTotal);
 }
 
@@ -103,6 +105,7 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> value;
   }
+  filestream.close();
   return (std::stol(value));
 }
 
@@ -134,6 +137,7 @@ long LinuxParser::ActiveJiffies(int pid) {
     cutime = stol(stat_vals[15]);
     cstime = stol(stat_vals[16]);
   }
+  filestream.close();
   return utime + stime + cutime + cstime;
 }
 
@@ -165,6 +169,7 @@ vector<string> LinuxParser::CpuUtilization() {
       cpu_utilization.push_back(value);
     }
   }
+  filestream.close();
   return cpu_utilization;
 }
 
@@ -184,6 +189,7 @@ int LinuxParser::TotalProcesses() {
       }
     }
   }
+  filestream.close();
   return 0;
 }
 
@@ -203,6 +209,7 @@ int LinuxParser::RunningProcesses() {
       }
     }
   }
+  filestream.close();
   return 0;
 }
 
@@ -216,6 +223,7 @@ string LinuxParser::Command(int pid) {
     std::istringstream linestream(line);
     linestream >> command;
   }
+  filestream.close();
   return command;
 }
 
@@ -233,6 +241,7 @@ string LinuxParser::Ram(int pid) {
       }
     }
   }
+  filestream.close();
   return string();
 }
 
@@ -250,6 +259,7 @@ string LinuxParser::Uid(int pid) {
       }
     }
   }
+  filestream.close();
   return string();
 }
 
@@ -290,7 +300,7 @@ long LinuxParser::UpTime(int pid) {
 
     start_time = stat_vals[21];
   }
-
+  filestream.close();
   if (start_time != "") {
     return UpTime() - stol(start_time) / sysconf(_SC_CLK_TCK);
   } else
